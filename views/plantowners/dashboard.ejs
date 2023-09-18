@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/plantdash.css">
+    <title>Plant Dashboard</title>
+</head>
+<body>
+    <main>
+
+       <!--==================== HEADER ====================-->
+   <header class="header" id="header">
+    
+    <nav class="nav container">
+       <a href="#" class="nav__logo">
+          <img class="logo" src="assets/img/logo.svg" alt="">
+          <p class="logo__name"></p>
+       </a>
+
+       <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+          </ul>
+
+          <div class="user__info">
+            <img src="assets/img/facility.png" alt="">
+            <p class="user__name"><%= ownerData.Name %></p>
+          </div>
+
+          <!--  Close Button  -->
+          <div class="nav__close" id="nav-close">
+             <img class="icon" src="assets/img/close-line.svg" alt="close-icon">
+          </div>
+       </div>
+       
+       <!--  Toggle Button  -->
+       <div class="nav__toggle" id="nav-toggle">
+          <img class="icon" src="assets/img/menu-line.svg" alt="menu-line">
+       </div>
+    </nav>
+    </header>
+
+    <section class="plantdash container">
+        
+      <div class="cards">
+          <!-- Upcoming Pickups Card -->
+          <div class="card">
+              <h2>Pickups Requests</h2>
+              <p class="card__data"><%= ownerData.Requests.length %> requests</p>
+          </div>
+          
+          <!-- Total Waste Recycled Card -->
+          <div class="card">
+              <h2>Waste Recycled</h2>
+              <p class="card__data">3455 kg</p>
+          </div>
+          
+          <!-- Current Credits Card -->
+          <div class="card">
+              <h2>Credits allocated</h2>
+              <p class="card__data">70 K</p>
+          </div>
+      </div>   
+
+      <!-- authorise pickup requests -->
+      <div class="pickups container">
+         <div class="user__scheduled__pickups">
+            <h2 class="pickups__title">Upcoming Pickups:</h2>
+            <% if(ownerData.Requests.length == 0) { %>
+
+                <p class="pickup__facility__name">No pickups</p>
+
+            <% } else {%>
+                <% for (let i = 0 ; i < ownerData.Requests.length ; i++) { %>
+                    <div class="pickup__details credits__button-price">
+                        <p class="pickup__facility__name"><%= ownerData.Requests[i].username %></p>
+                        <p class="pickup__date"><%= ownerData.Requests[i].date %></p>
+                        <p class="pickup__time">3:30pm - 4:30pm</p>
+                        <form action="confirm-pickup" method="post">
+                            <input type="hidden" name="ewphone" value="<%= ownerData.Phone %>" id="">
+                            <input type="hidden" name="index" value="<%= i %>" id="">
+                            <input type="hidden" name="username" id="username" value="<%= ownerData.Requests[i].username %>">
+                            <button type="submit">Confirm Pickup</button>
+                        </form>
+                    </div>
+                <% } %>
+
+            <% } %>
+
+         </div>
+     </div>
+
+     <!-- grant credits -->
+     <div class="grant container">
+      <div class="grant__box">
+         <h2 class="grant__title">Grant Credit Points</h2>
+        <div class="grant__container">
+            <div class="user__data u1">
+               <p class="username">Username</p>
+               <form action="/grantcreditpoints" method="post">
+                    <input type="hidden" name="plantphone" value="<%= ownerData.Phone %>">
+                    <input type="text" name="username" placeholder="username" id="">
+                    <input type="text" name="creditpts"  placeholder="Enter Credits">
+                    <button class="grant__button" type="submit">Grant</button>
+               </form>
+               
+            </div>
+         </div>
+      </div>
+     </div>
+
+    </section>
+
+
+
+     <!--==================== FOOTER ====================-->
+   <div class="footer__container" id="footer">
+    <div class="footer__text">
+       <p>An initiative by</p>
+       <h3>Ministry of Environment</h3>
+    </div>
+
+    <div class="social__icons">
+       <a target="_blank" href="https://moef.gov.in/">
+          <img class="footer__social-icon" src="assets/img/website.png" alt="">
+       </a>
+       <a target="_blank" href="https://twitter.com/moefcc">
+          <img class="footer__social-icon" src="assets/img/twitter.png" alt="">
+       </a>
+       <a target="_blank" href="https://www.instagram.com/moefccgoi/">
+          <img class="footer__social-icon" src="assets/img/instagram.png" alt="">
+       </a>
+       <a target="_blank" href="https://www.youtube.com/channel/UCCl94zd6YfuUrv9DJz_5RcA">
+          <img class="footer__social-icon" src="assets/img/youtube.png" alt="">
+       </a>
+       <a target="_blank" href="https://www.facebook.com/moefcc/">
+          <img class="footer__social-icon" src="assets/img/facebook.png" alt="">
+       </a>
+    </div>
+
+    <div class="footer__nav">
+       <ul>
+          <li>
+             <a href="#" class="footer__links">Home</a>
+             <a href="#" class="footer__links">News</a>
+             <a href="#" class="footer__links">Partner</a>
+             <a href="#" class="footer__links">Locate</a>
+             <a href="#" class="footer__links">Issues</a>
+          </li>
+       </ul>
+    </div>
+
+    <div class="footer__copyright">
+       <p>Copyright &copy;2023 SIH <span>TeamGriffith</span></p>
+    </div>
+    </div>
+
+    <script>
+      // JavaScript logic goes here
+      document.getElementById('pickup-form').addEventListener('submit', function(event) {
+          event.preventDefault();
+          
+          // Retrieve values from form inputs
+          const pickupDate = document.getElementById('pickup-date').value;
+          const ewasteType = document.getElementById('ewaste-type').value;
+          
+          // Perform actions with the collected data (e.g., send it to a server)
+          console.log('Date:', pickupDate);
+          console.log('E-waste Type:', ewasteType);
+          
+          // Clear form inputs if needed
+          document.getElementById('pickup-date').value = '';
+          document.getElementById('ewaste-type').value = '';
+      });
+  </script>
+</body>
+</html>

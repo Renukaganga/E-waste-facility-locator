@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%= ownerData.Name %>
+    <% if(ownerData.Requests.length == 0) { %>
+        <div class=""> you have no pending requests</div>
+    <% } else {%>
+        <% for(let i = 0 ; i < ownerData.Requests.length ; i++) {%>
+            <form action="confirm-pickup" method="post">
+                <div class="">
+                    <p><%= ownerData.Requests[i].username %></p>
+                    <p><%= ownerData.Requests[i].date %></p>
+                </div>
+                <input type="hidden" name="ewphone" value="<%= ownerData.Phone %>" id="">
+                <input type="hidden" name="index" value="<%= i %>" id="">
+                <input type="hidden" name="username" id="username" value="<%= ownerData.Requests[i].username %>">
+                <button type="submit">Confirm Pickup</button>
+            </form>
+        <% } %>
+
+    <% } %>
+</body>
+</html>

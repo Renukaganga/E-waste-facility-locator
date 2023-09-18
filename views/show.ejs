@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/assets/css/particular.css">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+    <title>Info</title>
+</head>
+<body>
+    <main>
+
+        <!--==================== HEADER ====================-->
+        <header class="header" id="header">
+            <nav class="nav container">
+               <a href="#" class="nav__logo">
+                  <img class="logo" src="/assets/img/logo.svg" alt="">
+               </a>
+   
+               <div class="nav__menu" id="nav-menu">
+                  <ul class="nav__list">
+   
+                     <li class="nav__item">
+                        <a href="#locate" class="nav__link">Locate</a>
+                     </li>
+                     
+                     <li class="nav__item">
+                        <a href="#redeem" class="nav__link">Redeem</a>
+                     </li>
+                  </ul>
+               <% if (!currentUser) { %>
+                  <div class="nav__buttons">
+                     <a href="/login" class="nav__button-login">Log In</a>
+                     <a href="/register" class="nav__button-signin">Sign Up</a>
+                  </div>
+               <% } else { %>
+                   <div class="nav__buttons">
+                       <a href="" class="nav__button-login"> <%= currentUser.CreditPoints %> </a>
+                       <a href="/userdashboard" class="nav__button-login"> <%= currentUser.FirstName %> </a>
+                       <a href="/logout" class="nav__button-login"> Logout </a>
+                   </div>
+                   <% } %>
+                  <!--  Close Button  -->
+                  <div class="nav__close" id="nav-close">
+                     <img class="icon" src="/assets/img/close-line.svg" alt="close-icon">
+                  </div>
+               </div>
+   
+               <!--  Toggle Button  -->
+               <div class="nav__toggle" id="nav-toggle">
+                  <img class="icon" src="/assets/img/menu-line.svg" alt="menu-line">
+               </div>
+            </nav>
+         </header>
+ 
+     <!-- plant loc and details -->
+       <section class="info__section container">
+          <div class="locdata__container">
+ 
+              <div class="map" id="map" style="height: 50%; width: 50%; align-self: center;">
+              <!-- map embed here -->
+              </div>
+            
+              <div class="info__container">
+                  <div class="location__info">
+                      <!-- info about location -->
+                      <h4 class="loc__name"><%= plant.Name %></h4>
+                      <p class="loc__address">Address : <%= plant.Address %></p>
+                      <p class="loc__number">Phone Num :<%= plant.Phone %></p>
+                  </div>
+              </div>
+          </div>
+ 
+      </section>
+ 
+      <section>
+          <!-- Booking Pickup Slot Form -->
+          <div class="booking-form">
+                <h2>Book a Pickup Slot</h2>
+                
+                <form id="pickup-form" action="/book-slot" method="post">
+                   <div class="date__time">
+                      <label for="pickup-date">Date:</label>
+                      <input  type="date" id="pickup-date" name="pickup-date" required><br>
+                      <label for="pickup-date">Type:</label>
+                      <input  type="text" id="" name="pickup-type" required><br>
+                      <p></p>
+                      <br>
+                   </div>
+                     <input type="hidden" name="username" value="<%= currentUser.username %>">
+                     <input type="hidden" name="plantphone" value="<%= plant.Phone %>">
+                     <button type="submit" class="submit-button">Book A Slot</button>
+                   
+                </form>
+          </div>
+       </section>
+ 
+      <!--==================== FOOTER ====================-->
+    <div class="footer__container" id="footer">
+     <div class="footer__text">
+        <p>An initiative by</p>
+        <h3>Ministry of Environment</h3>
+     </div>
+ 
+     <div class="social__icons">
+        <a target="_blank" href="https://moef.gov.in/">
+           <img class="footer__social-icon" src="/assets/img/website.png" alt="">
+        </a>
+        <a target="_blank" href="https://twitter.com/moefcc">
+           <img class="footer__social-icon" src="/assets/img/twitter.png" alt="">
+        </a>
+        <a target="_blank" href="https://www.instagram.com/moefccgoi/">
+           <img class="footer__social-icon" src="/assets/img/instagram.png" alt="">
+        </a>
+        <a target="_blank" href="https://www.youtube.com/channel/UCCl94zd6YfuUrv9DJz_5RcA">
+           <img class="footer__social-icon" src="/assets/img/youtube.png" alt="">
+        </a>
+        <a target="_blank" href="https://www.facebook.com/moefcc/">
+           <img class="footer__social-icon" src="/assets/img/facebook.png" alt="">
+        </a>
+     </div>
+ 
+     <div class="footer__nav">
+        <ul>
+           <li>
+              <a href="#" class="footer__links">Home</a>
+              <a href="#" class="footer__links">News</a>
+              <a href="#" class="footer__links">Partner</a>
+              <a href="#" class="footer__links">Locate</a>
+              <a href="#" class="footer__links">Issues</a>
+           </li>
+        </ul>
+     </div>
+ 
+     <div class="footer__copyright">
+        <p>Copyright &copy;2023 SIH <span>TeamGriffith</span></p>
+     </div>
+     </div>
+     </main>
+    
+</body>
+
+<script>
+    let lon = '<%- plant.Location.coordinates[0] %>'
+    let lat = '<%- plant.Location.coordinates[1] %>'
+    const longitude = 
+        mapboxgl.accessToken = 'pk.eyJ1IjoidGl0YW5pdW01OTYiLCJhIjoiY2w2bmIwNWxwMHRqOTNqbzcxNWxzN240ZCJ9.zpgHYiL8reD3OPg-t1_TuQ';
+        const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    
+        style: 'mapbox://styles/mapbox/streets-v12', // style URL
+        center: [lon , lat], // starting center in [lng, lat]
+        zoom: 15 // starting zoom
+    });
+    console.log(lon , lat);
+    let name = '<%- plant.Name %>'
+    new mapboxgl.Marker()
+            .setLngLat([lon , lat])
+            .setPopup(
+                new mapboxgl.Popup({offset : 25})
+                .setHTML(
+                    `<h3>${name}</h3>`
+                )
+            )
+            .addTo(map)
+</script>
+</html>

@@ -1,0 +1,59 @@
+<!-- views/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ... (previous code) ... -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://cdn.jsdelivr.net/places.js/1/places.min.js"></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v3.1.1/mapbox-gl-directions.js'></script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v3.1.1/mapbox-gl-directions.css' type='text/css' />
+</head>
+<body>
+    <h1>Mapbox Navigation</h1>
+    <div id="map"></div>
+    <div id="instructions"></div>
+    <script>
+        // Replace 'YOUR_MAPBOX_ACCESS_TOKEN' with your actual Mapbox access token
+        mapboxgl.accessToken = 'pk.eyJ1IjoidGl0YW5pdW01OTYiLCJhIjoiY2w2bmIwNWxwMHRqOTNqbzcxNWxzN240ZCJ9.zpgHYiL8reD3OPg-t1_TuQ';
+
+        // Initialize Mapbox GL JS map
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-74.006, 40.7128], // Initial map center (longitude, latitude)
+            zoom: 12 // Initial zoom level
+        });
+
+        // Define your starting and ending coordinates
+        var startPoint = [-74.006, 40.7128]; // Replace with actual coordinates
+        var endPoint = [-74.010, 40.705];    // Replace with actual coordinates
+
+        // Add Mapbox Navigation logic
+        var directions = new MapboxDirections({
+            accessToken: mapboxgl.accessToken,
+            unit: 'metric', // You can specify 'imperial' or 'metric'
+            profile: 'mapbox/driving-traffic', // You can specify other profiles as needed
+            alternatives: true, // Show alternative routes
+            steps: true, // Display turn-by-turn instructions
+            language: 'en', // Language for instructions
+            interactive: true // Enable user interaction with the map
+        });
+
+        // Set the origin and destination for navigation
+        directions.setOrigin(startPoint);
+        directions.setDestination(endPoint);
+
+        map.addControl(directions, 'top-left');
+
+        // Listen for the 'route' event to handle the route response
+
+    </script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+    <!-- Include additional Mapbox libraries as needed -->
+</body>
+</html>

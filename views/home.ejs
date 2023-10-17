@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!--=============== CSS ===============-->
+      <link rel="stylesheet" href="./assets/css/styles.css">
+      <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+
+      <title>EcoEase</title>
+   </head>
+   <body>
+      <!--==================== HEADER ====================-->
+      <header class="header" id="header">
+         <nav class="nav container">
+            <a href="#" class="nav__logo">
+               <img class="logo" src="assets/img/logo.svg" alt="">
+            </a>
+
+            <div class="nav__menu" id="nav-menu">
+               <ul class="nav__list">
+
+                  <li class="nav__item">
+                     <a href="#locate" class="nav__link">Locate</a>
+                  </li>
+                  
+                  <li class="nav__item">
+                     <a href="#redeem" class="nav__link">Redeem</a>
+                  </li>
+               </ul>
+            <% if (!currentUser) { %>
+               <div class="nav__buttons">
+                  <a href="/login" class="nav__button-login">Log In</a>
+                  <a href="/register" class="nav__button-signin">Sign Up</a>
+               </div>
+            <% } else { %>
+                <div class="nav__buttons">
+                    <a href="" class="nav__button-login"> <%= currentUser.CreditPoints %> </a>
+                    <a href="/userdashboard" class="nav__button-login"> <%= currentUser.FirstName %> </a>
+                    <a href="/logout" class="nav__button-login"> Logout </a>
+                </div>
+                <% } %>
+               <!--  Close Button  -->
+               <div class="nav__close" id="nav-close">
+                  <img class="icon" src="assets/img/close-line.svg" alt="close-icon">
+               </div>
+            </div>
+
+            <!--  Toggle Button  -->
+            <div class="nav__toggle" id="nav-toggle">
+               <img class="icon" src="assets/img/menu-line.svg" alt="menu-line">
+            </div>
+         </nav>
+      </header>
+
+      <!--==================== MAIN ====================-->
+      <main class="main">
+         <!--==================== HOME ====================-->
+         <section class="home" id="home">
+            <div class="home__container container">
+   
+               <div class="home__content">
+                  <div class="home__data">
+                     <div class="home__text-img">
+                        <div class="home__text">
+                           <h3 class="home__subtitle">
+                              Dispose your E-Waste and earn credits
+                           </h3>
+                           <h1 class="home__title">
+                              E-Waste Facility Locator
+                           </h1>
+         
+                           <p class="home__description">
+                              Find the nearest e-waste facility to recycle all your electronic waste safely and responsibly with
+                              government authorised E-Waste disposal facilities.
+                           </p>
+         
+                           <a href="#locate" class="home__button">
+                              Explore Locations
+                           </a>
+                        </div>
+                        <div class="home__img">
+                           <img src="assets/img/background-img.png" alt="">
+                        </div>
+                     </div>
+   
+                     <div class="home__features">
+                        <div class="feature__container">
+                           <img src="assets/img/logo.svg" alt="">
+                           <p class="feature__title">Nearest E-Waste Collection Locator</p>
+                           <p class="feature__subtitle">Users can easily find the nearest e-waste collection and recycling facilities in their area. This feature makes it convenient for people to responsibly dispose of their electronic devices.</p>
+                        </div>
+                        <div class="feature__container">
+                           <img src="assets/img/logo.svg" alt="">
+                           <p class="feature__title">Book a slot</p>
+                           <p class="feature__subtitle">Users can choose form a variety fo e-waste facilities and book a slot accordingto them for e-waste pickup at their doorstep.</p>
+                        </div>
+                        <div class="feature__container">
+                           <img src="assets/img/logo.svg" alt="">
+                           <p class="feature__title">Redeem credit points</p>
+                           <p class="feature__subtitle">Users can earn credits points by disposing e-waste in nearest facilities, and earn credit points relative to precious metals that could be scrapped form device. These credit points can be redeemed into useful items.</p>
+                        </div>
+                     </div>
+   
+                     <section class="locate" id="locate">
+                        <div class="locate__container container">
+                           <div class="locate__content">
+            
+                              <h2 class="locate__title">
+                                 Find the nearest E-Waste Facility
+                              </h2>
+            
+                              <div class="location__field">
+                                 <label class="location__label" for="location">Enter your location:</label>
+                                 <br>
+                                 <form action="/userdefloc" method="post" style="display: inline;"> 
+                                    <input class="location__input" type="text" id="location" name="location" placeholder="e.g., City, State, Country" required="true">
+                                    <button href="/userdefloc" type="submit" class="locate__button-search">Search</button>
+                                 </form>
+                                 <form action="/getCurrLoc" method="POST" style="display: inline;">
+                                    <input type="hidden" name="latitude" id="lat" value="">
+                                    <input type="hidden" name="longitude" id="lng" value="">
+                                    <button type="submit" class="locate__button-search">Find ME</button>
+                                 </form>
+                                 
+                                </div>
+                           </div>
+                        </div>
+                        <div class="map__image">
+                           <img src="assets/img/map-vector.png" alt="">
+                        </div>
+                     </section>
+                     
+                  </div>
+               </div>
+            </div>
+         </section>
+     
+         
+         <!--==================== LOCATE ====================-->
+         
+         <section class="analyze container locate" id="analyze">
+            <div class="analyze__container container">
+               <div class="analyze__content">
+   
+                  <h2 class="analyze__title">Analyze Your E-Waste</h2>
+   
+                  <div class="analyze__search">
+                     <label class="analyze__label" for="item">Enter your E-Waste: </label>
+                     <br>
+                     <select id="mySelect" class="analyze__input" name="item" id="item">
+                        <option value="div1">Personal Computers</option>
+                        <option value="div2">Laptops</option>
+                        <option value="div3">Smartphones</option>
+                        <option value="div4">Printers</option>
+                        <option value="div5">Hard Disk Drives</option>
+                        <option value="div6">RAM Chips</option>
+                        <option value="div7">Televisions</option>
+                        <option value="div8">Referidgerator</option>
+                        <option value="div9">Washing Machine</option>
+                        <option value="div10">Air-Conditioners</option>
+                        <option value="div11">Fluoroscent/ Mercury Lamps</option>
+                        <option value="div12">Routers</option>
+                        <option value="div13">Batteries</option>
+                        <option value="div14">Wires</option>
+                        <option value="div15">Circuit Boards</option>
+                     </select>
+   
+                     <button id="myButton" class="analyze__button-search">Search</button>
+                  </div>
+   
+                  <div class="analyze__info" id="analyze-info">
+                     <!-- information about e-waste goes here -->
+   
+                     <div id="div1" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Personal Computers</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Heavy Metals:
+                              </h4>
+                              lead, mercury, cadmium, and chromium
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These metals are toxic and can leach into the soil and water if not disposed of
+                                    properly.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Brominated Flame Retardants (BFRs):
+                              </h4>
+                              BFRs are chemicals used in circuit boards, and cables to reduce the risk of fire.
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    Some BFRs have been linked to health issues and have the potential to bioaccumulate in
+                                    the food chain.
+                                 </p>
+                                 <p class="effect__environment">
+                                    While they serve a safety purpose in the device, they can be harmful when released into
+                                    the
+                                    environment.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lithium Batteries:
+                              </h4>
+                              While lithium-ion batteries are commonly used in laptops, tablets, and smartphones, they can
+                              be hazardous if
+                              damaged or not disposed of properly.
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    They may pose a fire risk if punctured or exposed to extreme temperatures.
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+   
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards (Motherboards and PCBs):
+                           </h4>
+                           gold, silver, and copper
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Central Processing Units (CPUs):
+                           </h4>
+                           gold, silver, and palladium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Hard Drives:
+                           </h4>
+                           aluminum, copper
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Power Supply Units (PSUs):
+                           </h4>
+                           copper and aluminum
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Cooling Fans:
+                           </h4>
+                           copper and aluminum
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Optical Drives:
+                           </h4>
+                           aluminum, steel, gold
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div2" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Laptops</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Heavy Metals:
+                              </h4>
+                              Laptops may contain heavy metals, including lead, mercury, cadmium, and chromium
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These metals are toxic and can leach into the soil and water if not disposed of
+                                    properly.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Batteries:
+                              </h4>
+                              Laptop batteries, especially older ones, often contain hazardous materials such as
+                              lithium-ion,
+                              nickel-cadmium (NiCd), or nickel-metal hydride (NiMH) batteries
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    hese can release toxic chemicals if not disposed of properly.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Circuit Boards:
+                              </h4>
+                              The printed circuit boards (PCBs) in laptops contain various components and materials,
+                              including lead
+                              solder
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    If these components are not recycled properly, lead can leach into the environment,
+                                    leading to soil
+                                    and water contamination.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Plastic Casings:
+                              </h4>
+                              Laptops are typically encased in plastic, which can release harmful chemicals when
+                              incinerated or left to
+                              degrade in landfills
+                              </p>
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Plastics:
+                           </h4>
+                           Plastic components that can be recycled or repurposed
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              LCD Screens:
+                           </h4>
+                           indium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Batteries:
+                           </h4>
+                           lithium, cobalt, and nickel
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards:
+                           </h4>
+                           gold, silver, and palladium
+                           </p>
+   
+                        </div>
+                     </div>
+   
+                     <div id="div3" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Smartphones</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Batteries:
+                              </h4>
+                              Smartphones typically use lithium-ion batteries, which can pose a fire hazard and contain
+                              toxic
+                              chemicals
+                              </p>
+                              <br>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Heavy Metals:
+                              </h4>
+                              Smartphones contain various heavy metals, including lead, mercury, cadmium, and arsenic
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These metals can leach into the environment and contaminate soil and water if not
+                                    handled and
+                                    disposed of properly.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Printed Circuit Boards (PCBs):
+                              </h4>
+                              PCBs in smartphones often contain metals like lead, copper, and gold
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These components are important for the device's functionality but can be harmful if not
+                                    recycled
+                                    properly.
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+   
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards:
+                           </h4>
+                           gold, silver, and copper
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Lithium-Ion Batteries:
+                           </h4>
+                           lithium, cobalt, nickel, and manganese
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Display Panels:
+                           </h4>
+                           indium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Plastics and Polymers:
+                           </h4>
+                           plastics from smartphones can be recycled and reused
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div4" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Printers </span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Ink and Toner Cartridges:
+                              </h4>
+                              Printer ink cartridges can contain a variety of chemicals and pigments
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    it may be hazardous to the environment and human health
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Flame Retardants:
+                              </h4>
+                              Flame retardant chemicals are commonly used in the plastic components of electronic devices,
+                              including
+                              printers
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These chemicals can be harmful when released into the environment.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Batteries:
+                              </h4>
+                              Some printers may have backup batteries to maintain settings and memory
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    lithium can pose environmental risks if not handled and disposed of properly
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Fuser Units:
+                              </h4>
+                              In laser printers, the fuser unit can contain components that reach high temperatures during
+                              operation
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These components may release volatile organic compounds (VOCs) and other chemicals when
+                                    discarded.
+                                 </p>
+                              </div>
+   
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Metals:
+                           </h4>
+                           aluminum, steel, and copper
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Plastics:
+                           </h4>
+                           casings, covers, and other parts
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Printed Circuit Boards (PCBs):
+                           </h4>
+                           gold, silver, and palladium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Ink and Toner Cartridges:
+                           </h4>
+                           Empty ink and toner cartridges can be refilled or reused
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div5" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Hard Disk Drives </span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Hard Disk Drives:
+                              </h4>
+                              HDDs contain powerful neodymium magnets, which can be dangerous if mishandled
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    These magnets can cause serious injuries if they snap together or attract metallic
+                                    objects
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Electronics Components:
+                              </h4>
+                              HDDs contain various electronic components like circuit boards, chips, and capacitors
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    May contain hazardous materials, including heavy metals like mercury
+                                    or beryllium.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Brominated Flame Retardants (BFRs):
+                              </h4>
+                              BFRs are often used in the plastics and circuit boards of electronic devices, including HDDs,
+                              to
+                              reduce the risk of fire
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    These chemicals can have environmental and health risks when released during recycling
+                                    or
+                                    disposal.
+                                 </p>
+                              </div>
+   
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Platters:
+                           </h4>
+                           aluminum, glass
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards (PCBs):
+                           </h4>
+                           electronic components like controller and memory chips
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Actuator Arms:
+                           </h4>
+                           aluminum and sometimes rare earth magnets
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Precious Metals
+                           </h4>
+                           gold and palladium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Steel and Aluminum Casings:
+                           </h4>
+                           steel or aluminum
+                           </p>
+                        </div>
+   
+                     </div>
+   
+                     <div id="div6" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>RAM chips </span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lead (Pb):
+                              </h4>
+                              Lead is often used in soldering connections on electronic components, including RAM chips
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    It is a highly toxic metal that can contaminate soil and water if not properly managed.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Mercury (Hg):
+                              </h4>
+                              In the form of mercury
+                              switches or other components.
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    Mercury is a potent neurotoxin that can have severe health effects.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Arsenic (As):
+                              </h4>
+                              Arsenic is used in certain semiconductor materials and can be present in trace amounts in
+                              some
+                              electronic components, including RAM chips
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    Arsenic exposure can lead to various health problems.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Cadmium (Cd):
+                              </h4>
+                              Cadmium can be found in certain electronic components, particularly in older devices
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    It is a known carcinogen and poses risks to both the environment and human health
+                                 </p>
+                              </div>
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Gold:
+                           </h4>
+                           RAM chips contain small amounts of gold bonding wires
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Silver:
+                           </h4>
+                           RAM chips may also have silver bonding wires
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Palladium:
+                           </h4>
+                           Palladium is used in small quantities in some RAM chips, especially older ones
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Copper:
+                           </h4>
+                           RAM chips have copper traces and connections
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div7" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Televisions </span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lead:
+                              </h4>
+                              Lead is often used in the glass of older cathode-ray tube (CRT) televisions
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    environmental and health hazard if it leaches into soil and
+                                    water.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Mercury:
+                              </h4>
+                              Mercury is found in certain types of fluorescent backlight lamps used in LCD and older
+                              flat-panel displays
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    Mercury is a toxic substance if released.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Cadmium:
+                              </h4>
+                              Cadmium is used in some older CRT and flat-panel displays
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    Cadmium is a heavy metal that is toxic and can accumulate in the environment.
+                                 </p>
+                              </div>
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards:
+                           </h4>
+                           gold, silver, and palladium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Copper:
+                           </h4>
+                           wiring, connectors, and coils
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Aluminum:
+                           </h4>
+                           TV casing, heat sinks, and structural components
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Glass:
+                           </h4>
+                           CRT televisions contain glass tubes
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Rare Earth Elements:
+                           </h4>
+                           neodymium and dysprosium
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div8" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Refrigerator</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Insulation Materials:
+                              </h4>
+                              Older refrigerators may have insulation materials that contain substances like polyurethane
+                              foam,
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    can release harmful gases when incinerated or improperly disposed of
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Compressors:
+                              </h4>
+                              Refrigerators contain compressors that can have oils containing hazardous substances like
+                              polychlorinated biphenyls (PCBs) and polybrominated biphenyls (PBBs)
+                              </p>
+                              <br>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Circuit Boards:
+                              </h4>
+                              contains lead,
+                              mercury, and other heavy metals
+                              </p>
+                              <br>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Copper and Aluminum:
+                              </h4>
+                              used in the coils and wiring of refrigerators
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    can have environmental impacts if not recycled properly
+                                 </p>
+                              </div>
+                           </div>
+                        </div>
+   
+   
+   
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Copper:
+                           </h4>
+                           Copper is a highly valuable and widely used metal in refrigeration systems
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Aluminum:
+                           </h4>
+                           Aluminum is another metal found in refrigerators, primarily in the form of aluminum tubing and
+                           heat
+                           exchangers
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Steel:
+                           </h4>
+                           The outer casing and structure of a refrigerator are typically made of steel
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Glass:
+                           </h4>
+                           Glass shelves and panels in refrigerators can be recycled into new glass products
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div9" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Washing Machine</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Heavy Metals:
+                              </h4>
+                              Washing machines may contain heavy metals such as lead, cadmium, and mercury
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These metals can be toxic and pose environmental risks if they leach into the soil or
+                                    water
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 CFCs and HCFCs:
+                              </h4>
+                              Some older washing machines may use chlorofluorocarbons (CFCs) or hydrochlorofluorocarbons
+                              (HCFCs) as refrigerants or in insulation
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    potential to bioaccumulate in
+                                    the food chain.
+                                 </p>
+                                 <p class="effect__environment">
+                                    can deplete the ozone layer and contribute to climate change.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Brominated Flame Retardants (BFRs):
+                              </h4>
+                              BFRs are often used in the plastic casings and circuit boards of electronic appliances,
+                              including washing machines
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These compounds can persist in the environment and have been associated with health
+                                    concerns.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lithium-ion Batteries:
+                              </h4>
+                              Some modern washing machines may incorporate rechargeable lithium-ion batteries in their
+                              control systems
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    can pose fire and
+                                    environmental hazards.
+                                 </p>
+                              </div>
+   
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Metals:
+                           </h4>
+                           steel, aluminum, copper, and brass. Steel is the most common metal component.
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Electric Motors:
+                           </h4>
+                           copper windings. These motors can be extracted and recycled.
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Compressors:
+                           </h4>
+                           Compressors contain valuable metals and refrigerants
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Electronic Control Boards:
+                           </h4>
+                           gold, silver, and palladium
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div10" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Air-Conditioners</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Refrigerants:
+                              </h4>
+                              Air conditioners use refrigerants, which are substances that circulate within the cooling
+                              system to facilitate heat exchange
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    can deplete the ozone layer and contribute to global warming if
+                                    released into the atmosphere.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Compressor Oil:
+                              </h4>
+                              Air conditioners contain oil in the compressor to lubricate moving parts
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    This oil can contain hazardous chemicals and should be carefully managed.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Electrical Components:
+                              </h4>
+                              Air conditioners contain various electronic components, such as capacitors and
+                              transformers.
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    can contain hazardous materials like polychlorinated biphenyls (PCBs) or other toxic
+                                    substances.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Circuit Boards:
+                              </h4>
+                              Printed circuit boards (PCBs) inside air conditioners may contain heavy metals like lead,
+                              cadmium, and mercury
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    toxic to humans and the environment
+                                 </p>
+                              </div>
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Copper and Aluminum:
+                           </h4>
+                           copper and aluminum coils
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Compressor:
+                           </h4>
+                           contains copper wiring and motors
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Refrigerants:
+                           </h4>
+                           Refrigerants
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Electronic Components:
+                           </h4>
+                           gold, silver, and rare earth elements
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Transformers and Capacitors:
+                           </h4>
+                           contains copper that can be recycled
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div11" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Fluoroscent/ Mercury containing Lamps</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Mercury:
+                              </h4>
+                              Mercury is a highly toxic heavy metal that poses serious health and environmental risks
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    Inhaling mercury vapor or ingesting contaminated water or food can lead to
+                                    mercury poisoning, which can have severe health effects, particularly on the
+                                    nervous system.
+                                 </p>
+                                 <p class="effect__environment">
+                                    Fluorescent lamps contain a small amount of mercury vapor, typically between 3 to
+                                    15 milligrams, depending on the lamp type and size. When lamps break or are
+                                    improperly disposed of, mercury can be released into the environment
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Phosphor Powder:
+                              </h4>
+                              Fluorescent lamps also contain phosphor powder on their inner surfaces
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These metals can leach into the environment if the lamps are not properly managed
+                                    during disposal
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Glass Tubes:
+                              </h4>
+                              The glass tubes of fluorescent lamps can shatter if mishandled or improperly disposed
+                              of, posing a risk of physical injury
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    the glass may be coated with a layer of hazardous phosphor powder, which can
+                                    become airborne if the lamp breaks.
+                              </div>
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Mercury:
+                           </h4>
+                           it can be reclaimed and reused
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Phosphor Powder:
+                           </h4>
+                           These phosphors contain rare earth elements
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Aluminum End Caps:
+                           </h4>
+                           Aluminum can be recycled as scrap metal
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards and Electronics:
+                           </h4>
+                           copper, gold, and silver,
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div12" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Routers </span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lead:
+                              </h4>
+                              Lead is often used in soldering electronic components on circuit boards
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    It can pose serious health risks if it leaches into the environment or is
+                                    inhaled or ingested
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Mercury:
+                              </h4>
+                              Some routers, particularly older models, may contain small amounts of mercury in
+                              fluorescent tubes or switches
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    Mercury is highly toxic and can contaminate the environment and food chain
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Brominated Flame Retardants (BFRs):
+                              </h4>
+                              BFRs are chemicals used in electronic devices to reduce the risk of fire
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These substances can be harmful to human health and the environment when they
+                                    enter the ecosystem.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Metals:
+                              </h4>
+                              Besides lead, routers may contain other metals like copper, aluminum, and steel
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    can contribute to environmental
+                                    pollution when improperly disposed of.
+                                 </p>
+                              </div>
+   
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Circuit Boards:
+                           </h4>
+                           gold, silver, and copper
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Memory Chips:
+                           </h4>
+                           RAM (Random Access Memory) and flash memory
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Processor (CPU):
+                           </h4>
+                           gold and palladium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Heat Sinks:
+                           </h4>
+                           contain aluminum or copper
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div13" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span> Batteries</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Heavy Metals:
+                              </h4>
+                              lead, mercury, and cadmium
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    can cause serious health problems, especially in children and pregnant
+                                    women.
+                                 </p>
+                                 <p class="effect__environment">
+                                    can harm the nervous system and the environment if not handled properly.
+   
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lithium-Ion Batteries:
+                              </h4>
+                              While lithium-ion batteries are not as hazardous as some other types, they can
+                              still pose risks if not managed correctly.
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    Overheating or puncturing a lithium-ion battery can result in fires or
+                                    explosions due to the flammable electrolytes they contain.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Chemical Electrolytes:
+                              </h4>
+                              Batteries use chemical electrolytes that can be corrosive and harmful to the
+                              environment if not handled properly
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    They can leak and cause soil and water contamination
+                                 </p>
+                              </div>
+   
+                           </div>
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Metals:
+                           </h4>
+                           lithium, cobalt, nickel, lead, mercury
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Electrolytes and Electrodes:
+                           </h4>
+                           can be reused in new batteries
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Copper and Aluminum:
+                           </h4>
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Rare Earth Elements:
+                           </h4>
+                           nickel-metal hydride (NiMH)
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div14" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Wires</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Plastic Insulation:
+                              </h4>
+                              The outer plastic insulation of wires and cables can contain hazardous
+                              chemicals such as flame retardants and plasticizers
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    When burned or exposed to extreme heat, these chemicals can release
+                                    toxic fumes into the air.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Heavy Metals:
+                              </h4>
+                              Wires and cables may have metal components, such as copper or aluminum
+                              conductors
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    While these metals themselves are not inherently harmful, their
+                                    improper disposal can lead to environmental contamination
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Brominated Flame Retardants (BFRs):
+                              </h4>
+                              Some wires and cables may contain brominated flame retardants to meet fire
+                              safety standards
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    These chemicals can be persistent in the environment and have been
+                                    associated with health concerns when they leach into soil or water
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Metals in Connectors:
+                              </h4>
+                              Connectors on the ends of cables may contain metals like gold, silver, and
+                              palladium
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    harmful if not properly managed during disposal
+                                 </p>
+                              </div>
+   
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Copper:
+                           </h4>
+                           most valuable recyclable component
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Aluminum:
+                           </h4>
+                           can be recycled
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Gold:
+                           </h4>
+                           gold-plated connectors or contacts
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Silver:
+                           </h4>
+                           can be recycled
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Other Metals:
+                           </h4>
+                           nickel, tin, or palladium
+                           </p>
+                        </div>
+                     </div>
+   
+                     <div id="div15" class="info__container myDiv">
+                        <h2 class="waste__title">
+                           <span>Old Circuit Boards</span> consists of:
+                        </h2>
+                        <div class="waste__components">
+                           <div class="harmful__components">
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Lead (Pb):
+                              </h4>
+                              Lead is a highly toxic heavy metal that was commonly used in solder on
+                              older circuit boards
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    It poses significant health risks, especially to children, and can
+                                    cause developmental and neurological problems.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Mercury (Hg):
+                              </h4>
+                              Mercury is a toxic heavy metal found in various components, including
+                              some switches and batteries
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__environment">
+                                    It can contaminate soil and water sources and accumulate in the
+                                    food chain, posing health risks to humans and wildlife.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Cadmium (Cd):
+                              </h4>
+                              Cadmium is often found in older nickel-cadmium (NiCd) batteries and some
+                              semiconductors
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    It is a known carcinogen and can also cause kidney damage and
+                                    other health problems
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Arsenic (As):
+                              </h4>
+                              Arsenic is sometimes used in semiconductors and can leach into the
+                              environment if not properly managed
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    It is a potent poison and carcinogen.
+                                 </p>
+                              </div>
+                              <p class="harmful__component-metals">
+                              <h4 class="harmful__component-name">
+                                 Antimony (Sb):
+                              </h4>
+                              Antimony is used in some flame retardants and semiconductors
+                              </p>
+                              <div class="effects">
+                                 <p class="effect__health">
+                                    It can be toxic to aquatic life and, in high concentrations,
+                                    harmful to humans
+                                 </p>
+                              </div>
+   
+                           </div>
+   
+                        </div>
+                        <div class="recoverable__items">
+                           <h2>Following items can be recovered:</h2>
+                           <p>
+                           <h4 class="item__name">
+                              Precious Metals:
+                           </h4>
+                           gold and silver
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Copper (Cu):
+                           </h4>
+                           can be recycled
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Platinum (Pt):
+                           </h4>
+                           can be recycled
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Rare Earth Elements (REEs):
+                           </h4>
+                           neodymium and europium
+                           </p>
+                           <br>
+                           <p>
+                           <h4 class="item__name">
+                              Aluminum (Al):
+                           </h4>
+                           can be recycled
+                           </p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+
+      <!--==================== FOOTER ====================-->
+      <div class="footer__container" id="footer">
+         <div class="footer__text">
+            <p>An initiative by</p>
+            <h3>Ministry of Environment</h3>
+         </div>
+
+         <div class="social__icons">
+            <a target="_blank" href="https://moef.gov.in/">
+               <img class="footer__social-icon" src="/assets/img/website.png" alt="">
+            </a>
+            <a target="_blank" href="https://twitter.com/moefcc">
+               <img class="footer__social-icon" src="/assets/img/twitter.png" alt="">
+            </a>
+            <a target="_blank" href="https://www.instagram.com/moefccgoi/">
+               <img class="footer__social-icon" src="/assets/img/instagram.png" alt="">
+            </a>
+            <a target="_blank" href="https://www.youtube.com/channel/UCCl94zd6YfuUrv9DJz_5RcA">
+               <img class="footer__social-icon" src="/assets/img/youtube.png" alt="">
+            </a>
+            <a target="_blank" href="https://www.facebook.com/moefcc/">
+               <img class="footer__social-icon" src="/assets/img/facebook.png" alt="">
+            </a>
+         </div>
+
+         <div class="footer__nav">
+            <ul>
+               <li>
+                  <a href="#" class="footer__links">Home</a>
+                  <a href="#" class="footer__links">News</a>
+                  <a href="#" class="footer__links">Partner</a>
+                  <a href="#" class="footer__links">Locate</a>
+                  <a href="#" class="footer__links">Issues</a>
+               </li>
+            </ul>
+         </div>
+
+         <div class="footer__copyright">
+            <p>Copyright &copy;2023 <span>TeamGriffith</span></p>
+         </div>
+      </div>
+
+
+      <!--=============== MAIN JS ===============-->
+      <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+      <script>
+            mapboxgl.accessToken = 'pk.eyJ1IjoidGl0YW5pdW01OTYiLCJhIjoiY2w2bmIwNWxwMHRqOTNqbzcxNWxzN240ZCJ9.zpgHYiL8reD3OPg-t1_TuQ';
+            const map = new mapboxgl.Map({
+            container: 'map', // container ID
+            // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+            style: 'mapbox://styles/mapbox/streets-v12', // style URL
+            center: [-24, 42], // starting center in [lng, lat]
+            zoom: 1 // starting zoom
+            });
+            
+            // Add geolocate control to the map.
+            map.addControl(
+            new mapboxgl.GeolocateControl({
+            positionOptions: {
+            enableHighAccuracy: true
+            },
+            // When active the map will receive updates to the device's location as it changes.
+            trackUserLocation: true,
+            // Draw an arrow next to the location dot to indicate which direction the device is heading.
+            showUserHeading: true
+            })
+            );
+    </script>
+    <script>
+        function onGeoSuccess (position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            // NEXT 2 LINES WILL SET VALUE OF RESPECTIVE INPUTS
+            document.getElementById("lat").value = lat;
+            document.getElementById('lng').value = lng;
+        }
+
+        function onGeoError (err) {
+            console.error("Error while trying to get position", err);
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+            if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(onGeoSuccess, onGeoError);
+        } else {
+            alert('GeoLocation not supported or not allowed');
+        }
+});
+    </script>
+    <script>
+        /*=============== Popup divs ===============*/
+ // Get references to the select element, button, and divs
+const select = document.getElementById("mySelect");
+const button = document.getElementById("myButton");
+const divs = document.querySelectorAll(".myDiv");
+
+// Add an event listener to the button
+button.addEventListener("click", () => {
+    // Get the selected value from the select element
+    const selectedValue = select.value;
+
+    // Hide all divs
+    divs.forEach((div) => {
+        div.style.display = "none";
+    });
+
+    // Show the selected div based on its ID
+    const selectedDiv = document.getElementById(selectedValue);
+    if (selectedDiv) {
+        selectedDiv.style.display = "block";
+    }
+});
+    </script>
+             
+      <script src="assets/js/main.js"></script>
+   </body>
+</html>

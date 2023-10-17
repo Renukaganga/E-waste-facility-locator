@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+    <!-- JavaScript Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+      crossorigin="anonymous"
+    ></script>
+    <title>Document</title>
+    <style>
+      body {
+        color: #fff;
+        background: hsl(192, 62%, 25%);
+        font-family: "Roboto", sans-serif;
+      }
+      .form {
+        margin: 30px auto;
+        margin-bottom: 0;
+        width: 400px;
+      }
+      .form form{
+        color: #999;
+        border-radius: 3px;
+        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
+        padding: 30px;
+        background: #fff;
+      }
+      .signup-signin-text a{
+        color: #fff;
+      }
+      form h2 {
+        padding-top: 10px;
+        color: #333;
+      }
+      .form-elements {
+        margin-bottom: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="container form">
+      <form action="/register" method="post">
+        <div>
+          <div class="row">
+            <h2>Sign up!</h2>
+          </div>
+          <p>Please enter your details</p>
+          <div class="row">
+            <div class="col">
+              <input
+                type="text"
+                name="FirstName"
+                id="firstName"
+                class="form-control form-elements"
+                placeholder="First Name"
+              />
+            </div>
+            <div class="col">
+              <input
+                type="text"
+                name="LastName"
+                id="lastName"
+                class="form-control form-elements"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+          <div>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="form-control form-elements"
+              placeholder="Email"
+            />
+          </div>
+
+          <div>
+            <input
+              type="text"
+              name="Phone"
+              id="phone"
+              class="form-control form-elements"
+              placeholder="Phone No."
+            />
+          </div>
+          <div >
+            <input type="text" name="username" id="username" class="form-control form-elements"
+            placeholder="Username">
+          </div>
+          <div>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              class="form-control form-elements"
+              placeholder="Password"
+            />
+          </div>
+          <button type="button submit" class="btn btn-primary">
+            Submit
+          </button>
+        </div>
+      </form>
+      <div class="signup-signin-text">Already a member? <a href="/login">Sign In</a></div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+</body>
+</html>

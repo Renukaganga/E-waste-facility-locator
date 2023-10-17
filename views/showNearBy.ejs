@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/nearby.css">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css' rel='stylesheet' />
+    <title>Locate</title>
+</head>
+<body>
+    <main>
+        <header class="header" id="header">
+            <nav class="nav container">
+               <a href="#" class="nav__logo">
+                  <img class="logo" src="assets/img/logo.svg" alt="">
+               </a>
+   
+               <div class="nav__menu" id="nav-menu">
+                  <ul class="nav__list">
+   
+                     <li class="nav__item">
+                        <a href="#locate" class="nav__link">Locate</a>
+                     </li>
+                     
+                     <li class="nav__item">
+                        <a href="#redeem" class="nav__link">Redeem</a>
+                     </li>
+                  </ul>
+               <% if (!currentUser) { %>
+                  <div class="nav__buttons">
+                     <a href="/login" class="nav__button-login">Log In</a>
+                     <a href="/register" class="nav__button-signin">Sign Up</a>
+                  </div>
+               <% } else { %>
+                   <div class="nav__buttons">
+                       <a href="" class="nav__button-login"> <%= currentUser.CreditPoints %> </a>
+                       <a href="/userdashboard" class="nav__button-login"> <%= currentUser.FirstName %> </a>
+                       <a href="/logout" class="nav__button-login"> Logout </a>
+                   </div>
+                   <% } %>
+                  <!--  Close Button  -->
+                  <div class="nav__close" id="nav-close">
+                     <img class="icon" src="assets/img/close-line.svg" alt="close-icon">
+                  </div>
+               </div>
+   
+               <!--  Toggle Button  -->
+               <div class="nav__toggle" id="nav-toggle">
+                  <img class="icon" src="assets/img/menu-line.svg" alt="menu-line">
+               </div>
+            </nav>
+         </header>
+        <section class="map">
+
+            <div class="text__container-1 container">
+                <div class="text__title">Where Do I Recycle E-Waste?</div>    
+                <div class="text__data">The map enables you to find organizations that recover unwanted electronics. You should contact any of the listed organizations to determine the details of their services, hours, and any potential charges before loading up your vehicle. For more information regarding electronics recycling in India, contact Ministry Of Environment</div>  
+            </div>
+
+            <div class="map__container container">
+                <h2 class="map__title">Your nearest E-Waste facilities are: </h2>
+                <div class="map" id="map" style="height: 70%; width: 80%; align-self: center;" >
+                    <!-- MAP EMBED HERE -->
+                    <p>MAP goes here ! </p>
+                    <div id='map' style='width: 400px; height: 300px;'></div>
+                </div>
+            </div>
+            
+            <div class="table__container container">
+                <table class="table">
+                    <tr bgcolor="lightgrey">
+                        <th>Facility name</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Type</th>
+                    </tr>
+                    <% for (let i = 0 ; i < nearPlant.length ; i++)  { %>
+                        <tr class="datarow">
+                            <td><a href="/plantdata/<%= nearPlant[i]._id %>"><%= nearPlant[i].Name %></a></td>
+                            <td><%= nearPlant[i].Municipality%></td>
+                            <td><%= nearPlant[i].Phone %></td>
+                            <td><%= nearPlant[i].Categories %></td>
+                        </tr>
+                    <% } %>
+                </table>
+            </div> 
+           
+            <div class="text__container container">
+                <div class="text__title">What is E-Waste?</div>    
+                <div class="text__data">E-waste is a popular, informal name for electronic products nearing the end of their "useful life." Computers, televisions, VCRs, stereos, copiers, and fax machines are common electronic products. Many of these products can be reused, refurbished, or recycled.</div>
+                
+                <div class="text__title">Important Reminder:</div>
+                <div class="text__data">Many electronic products (computers, cell phones, tablets, etc.) are used to store personal information. Before donating or recycling your equipment, remember to remove all sensitive and personal information from its memory. Note that simply using your keyboard or mouse to delete files does not necessarily completely remove the information from your device's memory. Your local software store can provide you with the necessary drive cleaning software appropriate for your system.</div>
+            </div>
+        </section>
+    </main>
+    
+</body>
+</html>
+
+<script>
+    let lon = '<%- lon %>'
+    let lat = '<%- lat %>'
+    
+    const longitude = 
+        mapboxgl.accessToken = 'pk.eyJ1IjoidGl0YW5pdW01OTYiLCJhIjoiY2w2bmIwNWxwMHRqOTNqbzcxNWxzN240ZCJ9.zpgHYiL8reD3OPg-t1_TuQ';
+        const map = new mapboxgl.Map({
+        container: 'map', // container ID
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+    
+        style: 'mapbox://styles/mapbox/streets-v12', // style URL
+        center: [lon , lat], // starting center in [lng, lat]
+        zoom: 10   // starting zoom
+    });
+
+    let nearPlantCoord = <%- coordinateData %>;
+    let nearPlantName = <%- nearPlantName %>;
+
+
+    for(let i=0 ; i < nearPlantCoord.length ; i++){
+        new mapboxgl.Marker()
+            .setLngLat([nearPlantCoord[i][0] , nearPlantCoord[i][1]])
+            .setPopup(
+                new mapboxgl.Popup({offset : 25})
+                .setHTML(
+                    `<h3>${nearPlantName[i]}</h3>`
+                )
+            )
+            .addTo(map)
+    }
+
+</script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js'></script>
+
+</html>
